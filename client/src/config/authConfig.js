@@ -4,6 +4,6 @@ export const authConfig = {
   tagline: "Clients, studios, vendors. All in one place.",
   logoText: "ARCHSCALE",
   primaryColor: "#E95625",
-  allowSignup: true,
+  allowSignup: false,
   showForgotPassword: true,
 };

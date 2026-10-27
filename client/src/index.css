@@ -245,6 +245,14 @@ button, input {
   border-radius: 8px;
 }
 
+.auth-card select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #deddd9;
+  border-radius: 8px;
+  background: white;
+}
+
 .auth-card button {
   margin-top: 18px;
 }
@@ -319,6 +327,29 @@ button, input {
   color: #d9542a;
   font-weight: 700;
 }
+
+.text-link {
+  color: #d9542a;
+  font-weight: 600;
+}
+
+.platform-dashboard { max-width: 1280px; }
+.eyebrow { margin: 0 0 5px; color: #d9542a; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; }
+.create-tenant { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.create-tenant h2, .tenant-card h2 { margin: 0; }
+.create-tenant p { margin-bottom: 0; }
+.create-tenant form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; min-width: 510px; }
+.create-tenant input, .member-row select { padding: 10px; border: 1px solid #deddd9; border-radius: 7px; background: white; }
+.create-tenant button, .tenant-card button { border: 0; border-radius: 7px; padding: 10px 12px; background: #e95625; color: white; cursor: pointer; }
+.tenant-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 18px; margin-top: 20px; }
+.tenant-card { overflow: hidden; border: 1px solid #e6e3df; border-radius: 14px; background: white; }
+.tenant-card > header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px; border-bottom: 1px solid #eee; }
+.tenant-card code { display: block; margin: 5px 0 0 20px; color: #777; font-size: 12px; }
+.status-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; }.status-dot.active { background: #2b9b62; }.status-dot.disabled { background: #b4b0ac; }
+.card-actions { display: flex; gap: 7px; }.tenant-card button.danger { background: #a63d35; }.tenant-card button:disabled { opacity: .55; cursor: wait; }
+.tenant-card-body { padding: 0 18px 14px; }.member-count { font-size: 13px; }.member-list { border-top: 1px solid #f0eeeb; }
+.member-row { display: grid; grid-template-columns: 1fr 100px auto; align-items: center; gap: 8px; padding: 11px 0; border-bottom: 1px solid #f0eeeb; }.member-row strong, .member-row small { display: block; overflow-wrap: anywhere; }.member-row small { color: #777; font-size: 11px; margin-top: 3px; }
+@media (max-width: 720px) { .create-tenant { display: block; }.create-tenant form { min-width: 0; margin-top: 15px; grid-template-columns: 1fr; }.tenant-grid { grid-template-columns: 1fr; }.tenant-card > header { align-items: flex-start; flex-direction: column; }.member-row { grid-template-columns: 1fr; }.card-actions { width: 100%; }.card-actions button { flex: 1; } }
 
 @media (max-width: 480px) {
   .login-card {

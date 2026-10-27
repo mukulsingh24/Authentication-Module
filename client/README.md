@@ -1,16 +1,52 @@
-# React + Vite
+# ArchScale authentication
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This Vite client uses Supabase Auth and a tenant membership table. It supports:
 
-Currently, two official plugins are available:
+- tenant-scoped email/password sign-in and logout;
+- Supabase invitation emails and invite acceptance (name and password setup);
+- email verification through the invitation link;
+- password-recovery emails and password resets;
+- active-tenant and role checks before a dashboard is shown.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Public registration is intentionally disabled in the UI. Administrators invite new members instead.
 
-## React Compiler
+## Local client setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Create `client/.env` (it is ignored by Git):
 
-## Expanding the Oxlint configuration
+```env
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_OR_ANON_KEY
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+Then run:
+
+```sh
+npm install
+npm run dev
+```
+
+## Supabase setup
+
+1. Install the Supabase CLI and link this repository to the Supabase project.
+2. Apply the schema in `../supabase/migrations/20261027000000_tenant_auth.sql` with `supabase db push` (or run it in the SQL editor).
+3. Create the first tenant and its `super_admin` membership using the commented bootstrap SQL at the end of that migration.
+4. Add the deployed client URL to **Authentication → URL Configuration → Redirect URLs**:
+   - `https://your-app.example/accept-invite`
+   - `https://your-app.example/reset-password`
+   - local equivalents, for example `http://localhost:5173/accept-invite` and `http://localhost:5173/reset-password`.
+5. In **Authentication → Providers → Email**, keep email enabled. Configure SMTP for production; Supabase's default mail service is only suitable for testing.
+6. Set the Edge Function secret and deploy the invitation sender:
+
+```sh
+supabase secrets set APP_URL=https://your-app.example
+supabase functions deploy send-tenant-invite
+```
+
+`SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` are supplied to hosted Edge Functions by Supabase. Never put the service-role key in the Vite environment file.
+
+The Supabase invitation email template should use its supplied confirmation URL. Its redirect lands on `/accept-invite`, where the client verifies the one-time invitation token, lets the recipient choose a password, and activates only their pending membership.
+
+## Tenant login behavior
+
+The login form asks for a tenant slug. A valid password alone is insufficient: the account must have an active membership in an active tenant with that slug. Disabled tenants and non-members are signed out and cannot reach protected routes.

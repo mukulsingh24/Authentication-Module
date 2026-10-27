@@ -4,7 +4,8 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import ProtectedRoute from "./component/ProtectedRoute";
 
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import AcceptInvite from "./pages/AcceptInvite";
+import InviteMembers from "./pages/InviteMembers";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
@@ -24,7 +25,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<HomeRedirect />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
+      <Route path="/signup" element={<Navigate to="/accept-invite" replace />} />
+      <Route path="/accept-invite" element={<AcceptInvite />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
@@ -41,13 +43,21 @@ function AppRoutes() {
 
       <Route
         element={
-          <ProtectedRoute allowedRoles={["super_admin", "admin"]} />
+          <ProtectedRoute allowedRoles={["platform_admin", "admin"]} />
         }
       >
         <Route
           path="/admin"
           element={<h1 className="center">Admin Area</h1>}
         />
+      </Route>
+
+      <Route
+        element={
+          <ProtectedRoute allowedRoles={["platform_admin", "admin"]} />
+        }
+      >
+        <Route path="/invite-members" element={<InviteMembers />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

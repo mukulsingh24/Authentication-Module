@@ -5,7 +5,6 @@ import { supabase } from "../lib/supabase";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
@@ -13,7 +12,6 @@ export default function ResetPassword() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-    setMessage("");
     setBusy(true);
 
     const { error } = await supabase.auth.updateUser({ password });
@@ -25,10 +23,11 @@ export default function ResetPassword() {
       return;
     }
 
-    setMessage("Password updated successfully.");
-
     await supabase.auth.signOut();
-    navigate("/login", { replace: true });
+    navigate("/login", {
+      replace: true,
+      state: { message: "Password updated. You can sign in now." },
+    });
   }
 
   return (
@@ -51,7 +50,6 @@ export default function ResetPassword() {
         />
 
         {error && <p className="error">{error}</p>}
-        {message && <p className="success">{message}</p>}
 
         <button disabled={busy}>
           {busy ? "Updating..." : "Update password"}

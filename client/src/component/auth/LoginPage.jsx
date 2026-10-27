@@ -1,14 +1,16 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage({ config }) {
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [tenant, setTenant] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -19,7 +21,7 @@ export default function LoginPage({ config }) {
     setBusy(true);
 
     try {
-      const { error } = await signIn(email.trim(), password);
+      const { error } = await signIn(email.trim(), password, tenant);
 
       if (error) {
         setError(error.message);
@@ -42,6 +44,19 @@ export default function LoginPage({ config }) {
       <form className="login-card" onSubmit={handleSubmit}>
         <h1>Good to see you</h1>
         <p className="subtitle">{config.tagline}</p>
+
+        <label className="field">
+          <span>Tenant <em>(not needed for platform admins)</em></span>
+          <span className="input-wrap">
+            <input
+              type="text"
+              autoComplete="organization"
+              placeholder="Your workspace slug"
+              value={tenant}
+              onChange={(e) => setTenant(e.target.value)}
+            />
+          </span>
+        </label>
 
         <label className="field">
           <span>Your ID</span>
@@ -85,18 +100,15 @@ export default function LoginPage({ config }) {
         )}
 
         {error && <p className="login-error" role="alert">{error}</p>}
+        {location.state?.message && <p className="success" role="status">{location.state.message}</p>}
 
         <button className="continue-button" disabled={busy}>
           {busy ? "Signing in..." : "Continue →"}
         </button>
 
-        {config.allowSignup && (
-          <div className="invite-note">
-            <p>
-              New here? <Link to="/signup">Create an account</Link>
-            </p>
-          </div>
-        )}
+        <div className="invite-note">
+          <p>New here? Ask a workspace administrator to send you an invitation.</p>
+        </div>
       </form>
     </main>
   );
